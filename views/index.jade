@@ -1,5 +1,26 @@
 extends layout
 
 block content
-  h1= title
-  p Welcome to #{title}
+  .container
+    .row
+      .col-3
+        ul.nav.nav-pills.flex-sm-column
+          li.nav-item
+            a.nav-link.active(href='#') Работа
+          li.nav-item
+            a.nav-link(href='#') Универ
+          li.nav-item
+            a.nav-link(href='#') Клан
+      .col-md
+        .row.align-items-center
+          .col-md Mой ID: b2uf28yfvi2c9eq1v9
+          .col-auto
+            .row.button-row
+              button.btn.btn-secondary Пригласить
+              button.btn.btn-primary Новый диалог
+        ul.list-group.list-group-flush
+          li.list-group-item Cras justo odio
+          li.list-group-item Dapibus ac facilisis in
+          li.list-group-item Morbi leo risus
+          li.list-group-item Porta ac consectetur ac
+          li.list-group-item Vestibulum at eros
