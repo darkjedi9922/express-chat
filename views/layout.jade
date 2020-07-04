@@ -1,8 +1,24 @@
 doctype html
 html
   head
-    title= title
+    title Express Chat
     link(rel="stylesheet", href="/stylesheets/style.css")
     link(rel="stylesheet", href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css", integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk", crossorigin="anonymous")
   body
-    block content
+    .container
+      .row
+        .col-3
+          ul.nav.nav-pills.flex-sm-column
+            li.nav-item
+              a.nav-link.active(href='#') Работа
+            li.nav-item
+              a.nav-link(href='#') Универ
+            li.nav-item
+              a.nav-link(href='#') Клан
+        .col-md
+          .row.align-items-center
+            .col-md Mой ID: b2uf28yfvi2c9eq1v9
+            .col-auto
+              .row.button-row
+                block head-buttons
+          block content

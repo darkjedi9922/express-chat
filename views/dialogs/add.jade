@@ -1,0 +1,12 @@
+extends ../layout
+
+block head-buttons
+  button.btn.btn-success(for="add-dialog-form") Готово
+  a.btn.btn-secondary(href="#") Отмена
+
+block content
+  form#add-dialog-form
+    .form-group
+      label(for='nameInput') Название
+      input#nameInput.form-control(type='text')
+      small.form-text.text-muted Имя диалога, которое будет показано в меню
