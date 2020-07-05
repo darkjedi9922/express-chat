@@ -63,3 +63,6 @@ typings/
 # Compiled css
 public/stylesheets/*.css
 public/stylesheets/*.css.map
+
+# Database
+db/database
