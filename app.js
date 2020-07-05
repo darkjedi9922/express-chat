@@ -18,14 +18,21 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+
+// transforms sass/scss into css at runtime
 app.use(sassMiddleware({
   src: path.join(__dirname, 'public'),
   dest: path.join(__dirname, 'public'),
   indentedSyntax: false, // true = .sass and false = .scss
   sourceMap: true
 }));
+
+// make "public" folder public for static assets,
+// and besides these assets are got witout public folder 
+// e.g. /style.css and not /public/style.css
 app.use(express.static(path.join(__dirname, 'public')));
 
+// app module routes
 app.use('/', indexRouter);
 app.use('/dialogs', dialogsRouter);
 
