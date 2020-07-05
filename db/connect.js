@@ -12,5 +12,10 @@ module.exports = async () => {
         ignoreDuplicate: true
     });
 
+    await appDb.collection({
+        name: 'users',
+        schema: JSON.parse(fs.readFileSync(__dirname + '/schemas/user.json'))
+    })
+
     return appDb;
 };
