@@ -21,10 +21,14 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// flash uses session, the session uses cookies,
-// and the session requires a cookies secret key
-app.use(cookieParser('this is a secret key'));
-app.use(session({ cookie: { maxAge: 60000 } }));
+// flash uses session and the session uses cookies
+app.use(cookieParser('this is cookie secret key'));
+app.use(session({ 
+    secret: 'this is session secret key',
+    cookie: { maxAge: 60000 },
+    resave: false,
+    saveUninitialized: false
+}));
 app.use(flash());
 
 // transforms sass/scss into css at runtime
