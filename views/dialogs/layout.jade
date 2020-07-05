@@ -12,8 +12,9 @@ block content
           a.nav-link(href='#') Клан
     .col-md
       .row.align-items-center
-        .col-md Mой ID: b2uf28yfvi2c9eq1v9
+        .col-md Mой ID: #{token}
         .col-auto
           .row.button-row
             block head-buttons
+            a.btn.btn-secondary(href="/logout") Выход
       block primary
