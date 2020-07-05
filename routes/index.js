@@ -4,13 +4,10 @@ const { body } = require('express-validator');
 const { validateWithFlashBack } = require('../tools/validation');
 const { hash } = require('rxdb');
 const { getCollection } = require('../db/helpers');
+const { requireAccess } = require('../rights/helpers');
+const { isGuest } = require('../rights/users');
 
-router.get('/', async (req, res) => {
-    if (req.cookies.token) {
-        const userMe = await (await getCollection('users')).findOne()
-            .where('token').eq(req.cookies.token).exec();
-        if (userMe) res.redirect('/dialogs');
-    }
+router.get('/', requireAccess(isGuest, '/dialogs'), async (req, res) => {
     res.render('index', { title: 'Express', errors: req.errors });
 });
 

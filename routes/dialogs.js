@@ -1,5 +1,9 @@
-var express = require('express');
-var router = express.Router();
+const express = require('express');
+const router = express.Router();
+const { isLogged } = require('../rights/users');
+const { requireAccess } = require('../rights/helpers');
+
+router.use(requireAccess(isLogged, '/'));
 
 router.get('/', (req, res, next) => {
     res.render('dialogs/index', { token: req.cookies.token })
