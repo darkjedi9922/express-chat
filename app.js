@@ -4,6 +4,9 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var sassMiddleware = require('node-sass-middleware');
+var session = require('express-session');
+var flash = require('connect-flash');
+var { defineRequestErrors } = require('./tools/validation');
 
 var indexRouter = require('./routes/index');
 var dialogsRouter = require('./routes/dialogs');
@@ -17,7 +20,12 @@ app.set('view engine', 'jade');
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+
+// flash uses session, the session uses cookies,
+// and the session requires a cookies secret key
+app.use(cookieParser('this is a secret key'));
+app.use(session({ cookie: { maxAge: 60000 } }));
+app.use(flash());
 
 // transforms sass/scss into css at runtime
 app.use(sassMiddleware({
@@ -31,6 +39,8 @@ app.use(sassMiddleware({
 // and besides these assets are got witout public folder 
 // e.g. /style.css and not /public/style.css
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(defineRequestErrors);
 
 // app module routes
 app.use('/', indexRouter);
