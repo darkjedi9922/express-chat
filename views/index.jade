@@ -8,11 +8,7 @@ block content
           h5.card-title Авторизация
           p.card-text Исходя из введенных данных вы получите уникальный ID, по которому вас можно будет пригласить в диалог
           form(action="/login" method="post")
-            if errors.length
-              .row
-                .col
-                  each error in errors
-                    .alert.alert-danger= error.msg
+            include ./components/errors.jade
             .row.form-group
               .col-6
                 label(for='loginInput') Логин

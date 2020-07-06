@@ -4,14 +4,11 @@ block content
   .row
     .col-3
       ul.nav.nav-pills.flex-sm-column
+        for dialog in dialogs
         li.nav-item
-          a.nav-link.active(href='#') Работа
-        li.nav-item
-          a.nav-link(href='#') Универ
-        li.nav-item
-          a.nav-link(href='#') Клан
+            a.nav-link(href='/dialogs/#{dialog.id}')= dialog.title
     .col-md
-      .row.align-items-center
+      .row.align-items-center.form-group
         .col-md Mой ID: #{token}
         .col-auto
           .row.button-row

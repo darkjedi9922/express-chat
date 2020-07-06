@@ -2,11 +2,12 @@ extends layout
 
 block head-buttons
   button.btn.btn-success(for="add-dialog-form") Готово
-  a.btn.btn-secondary(href="/dialogs") Отмена
+  a.btn.btn-danger(href="/dialogs") Отмена
 
 block primary
   form#add-dialog-form(action="/dialogs/add" method="post")
+    include ../components/errors.jade
     .form-group
       label(for='nameInput') Название
-      input#nameInput.form-control(type='text')
+      input#nameInput.form-control(type='text', name="title")
       small.form-text.text-muted Имя диалога, которое будет показано в меню
