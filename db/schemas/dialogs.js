@@ -12,7 +12,7 @@ const schema = {
             type: "string"
         },
         authorToken: {
-            "type": "string"
+            type: "string"
         }
     },
     required: ["title", "authorToken"],
