@@ -21,5 +21,10 @@ const schema = {
 
 module.exports = {
     name: 'dialogs',
-    schema: schema
+    schema: schema,
+    statics: {
+        findByAuthor(authorToken) {
+            return this.find().where('authorToken').eq(authorToken).exec()
+        }
+    }
 }

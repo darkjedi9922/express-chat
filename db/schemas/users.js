@@ -17,5 +17,10 @@ const schema = {
 
 module.exports = {
     name: 'users',
-    schema: schema
+    schema: schema,
+    statics: {
+        findByToken(token) {
+            return this.findOne().where('token').eq(token).exec();
+        }
+    }
 }

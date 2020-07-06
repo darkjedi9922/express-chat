@@ -1,4 +1,4 @@
-const { getUserMe } = require("../db/helpers");
+const db = require("../db/connect");
 
-exports.isLogged = (req) => req.cookies.token && getUserMe(req.cookies.token);
-exports.isGuest = (req) => !this.isLogged(req);
+exports.isLogged = async (req) => req.cookies.token && (await db()).users.findByToken(req.cookies.token);
+exports.isGuest = async (req) => ! await this.isLogged(req);
