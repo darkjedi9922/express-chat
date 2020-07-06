@@ -5,8 +5,11 @@ block content
     .col-3
       ul.nav.nav-pills.flex-sm-column
         for dialog in dialogs
-        li.nav-item
-            a.nav-link(href='/dialogs/#{dialog.id}')= dialog.title
+          li.nav-item
+            a.nav-link(
+                class=(dialog.id == (currentDialog && currentDialog.id) ? 'active' : ''),
+                href='/dialogs/#{dialog.id}'
+            )= dialog.title
     .col-md
       .row.align-items-center.form-group
         .col-md Mой ID: #{token}
