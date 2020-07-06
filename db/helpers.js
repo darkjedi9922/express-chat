@@ -1,5 +1,4 @@
 const connectDb = require('./connect');
-const { getCollection } = require("../db/helpers");
 
 exports.getCollection = async (name) => {
     const appDb = await connectDb();
@@ -7,5 +6,5 @@ exports.getCollection = async (name) => {
 }
 
 exports.getUserMe = async (token) => {
-    return await (await getCollection('users')).findOne().where('token').eq(token).exec();
+    return await (await this.getCollection('users')).findOne().where('token').eq(token).exec();
 }
