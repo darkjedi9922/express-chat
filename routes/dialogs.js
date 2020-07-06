@@ -6,6 +6,8 @@ const { validateWithFlashBack } = require('../tools/validation');
 const { body } = require('express-validator');
 const shortid = require('shortid');
 const db = require('../db/connect');
+const createHttpError = require('http-errors');
+const { canPostMessage } = require('../rights/dialogs');
 
 router.use(requireAccess(isLogged, '/'));
 
@@ -42,8 +44,31 @@ router.get('/:id', async (req, res, next) => {
     res.render('dialogs/item', {
         token: req.cookies.token,
         dialogs: await appDb.dialogs.findByAuthor(req.cookies.token),
-        currentDialog: dialog
+        currentDialog: dialog,
+        messages: await Promise.all((await appDb.messages.findByDialog(dialog.id)).map(async (message) => ({
+            item: message,
+            author: await appDb.users.findOne(message.authorId).exec()
+        }))),
+        errors: req.errors
     })
 });
+
+router.post('/:id', async (req, res, next) => {
+    const appDb = await db();
+    const dialog = await appDb.dialogs.findOne(req.params.id).exec();
+    if (!dialog) return next(createHttpError(404));
+    next();
+}, requireAccess(canPostMessage), validateWithFlashBack([
+    body('text', 'Текст сообщения не указан').exists().notEmpty()
+]), async (req, res) => {
+    const appDb = await db();
+    await appDb.messages.insert({
+        dialogId: req.params.id,
+        message: req.body.text,
+        authorToken: req.cookies.token,
+        createdAt: Date.now()
+    });
+    res.redirect('back');
+})
 
 module.exports = router;
