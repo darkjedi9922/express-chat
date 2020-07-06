@@ -3,7 +3,7 @@ const router = express.Router();
 const { body } = require('express-validator');
 const { validateWithFlashBack } = require('../tools/validation');
 const { hash } = require('rxdb');
-const { getCollection } = require('../db/helpers');
+const { getCollection, getUserMe } = require('../db/helpers');
 const { requireAccess } = require('../rights/helpers');
 const { isGuest } = require('../rights/users');
 
@@ -16,7 +16,7 @@ router.post('/login', validateWithFlashBack([
     body('password', 'Пароль не передан').exists().notEmpty(),
 ]), async (req, res) => {
     const userToken = hash(`${req.body.login}${req.body.password}`);
-    (await getCollection('users')).insert({
+    if (!getUserMe(userToken)) (await getCollection('users')).insert({
         token: userToken,
         login: req.body.login
     });
