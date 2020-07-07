@@ -40,7 +40,14 @@ router.post('/add', validateWithFlashBack([
 router.get('/:id', async (req, res, next) => {
     const appDb = await db();
     const dialog = await appDb.dialogs.findOne(req.params.id).exec();
-    if (!dialog) return next();
+    if (!dialog) return next(createHttpError(404));
+
+    res.locals.appDb = appDb;
+    res.locals.dialog = dialog;
+    next();
+}, async (req, res) => {
+    const appDb = res.locals.appDb;
+    const dialog = res.locals.dialog;
     res.render('dialogs/item', {
         token: req.cookies.token,
         dialogs: await appDb.dialogs.findByAuthor(req.cookies.token),
@@ -57,11 +64,13 @@ router.post('/:id', async (req, res, next) => {
     const appDb = await db();
     const dialog = await appDb.dialogs.findOne(req.params.id).exec();
     if (!dialog) return next(createHttpError(404));
+    
+    res.locals.appDb = appDb;
     next();
 }, requireAccess(canPostMessage), validateWithFlashBack([
     body('text', 'Текст сообщения не указан').exists().notEmpty()
 ]), async (req, res) => {
-    const appDb = await db();
+    const appDb = res.locals.appDb;
     await appDb.messages.insert({
         dialogId: req.params.id,
         message: req.body.text,
