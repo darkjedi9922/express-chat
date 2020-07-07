@@ -54,7 +54,8 @@ router.get('/:id', async (req, res, next) => {
         currentDialog: dialog,
         messages: await Promise.all((await appDb.messages.findByDialog(dialog.id)).map(async (message) => ({
             item: message,
-            author: await appDb.users.findOne(message.authorId).exec()
+            author: await appDb.users.findOne(message.authorId).exec(),
+            messages: []
         }))),
         errors: req.errors
     })
@@ -66,17 +67,26 @@ router.post('/:id', async (req, res, next) => {
     if (!dialog) return next(createHttpError(404));
     
     res.locals.appDb = appDb;
+    res.locals.dialog = dialog;
     next();
 }, requireAccess(canPostMessage), validateWithFlashBack([
     body('text', 'Текст сообщения не указан').exists().notEmpty()
 ]), async (req, res) => {
-    const appDb = res.locals.appDb;
-    await appDb.messages.insert({
+    const newMessageId = shortid.generate();
+    await Promise.all([
+        res.locals.appDb.messages.insert({
+            id: newMessageId,
         dialogId: req.params.id,
         message: req.body.text,
         authorToken: req.cookies.token,
         createdAt: Date.now()
-    });
+        }),
+        res.locals.dialog.atomicUpdate(oldData => {
+            oldData.messages.push(newMessageId);
+            return oldData;
+        })
+    ]);
+
     res.redirect('back');
 })
 

@@ -1,9 +1,15 @@
+const shortid = require("shortid");
+
 const schema = {
     title: "Dialog message schema",
     version: 0,
     description: "Describes a dialog message schema",
     type: "object",
     properties: {
+        id: {
+            type: "string",
+            primary: true
+        },
         dialogId: {
             type: "string"
         },
