@@ -32,7 +32,8 @@ router.post('/add', validateWithFlashBack([
     const newDialog = await (await db()).dialogs.insert({
         id: shortid.generate(),
         title: req.body.title,
-        authorToken: req.cookies.token
+        authorToken: req.cookies.token,
+        messages: []
     });
     res.redirect(`/dialogs/${newDialog.id}`);
 });
@@ -54,8 +55,7 @@ router.get('/:id', async (req, res, next) => {
         currentDialog: dialog,
         messages: await Promise.all((await dialog.populate('messages') || []).map(async (message) => ({
             item: message,
-            author: await appDb.users.findOne(message.authorId).exec(),
-            messages: []
+            author: await appDb.users.findOne(message.authorId).exec()
         }))),
         errors: req.errors
     })
