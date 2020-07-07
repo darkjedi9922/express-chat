@@ -14,7 +14,7 @@ router.use(requireAccess(isLogged, '/'));
 router.get('/', async (req, res) => {
     res.render('dialogs/index', {
         token: req.cookies.token,
-        dialogs: await (await db()).dialogs.findByAuthor(req.cookies.token)
+        dialogs: await (await db()).dialogs.findByMember(req.cookies.token)
     })
 });
 
@@ -22,7 +22,7 @@ router.get('/add', async (req, res) => {
     res.render('dialogs/add', {
         errors: req.errors,
         token: req.cookies.token,
-        dialogs: await (await db()).dialogs.findByAuthor(req.cookies.token)
+        dialogs: await (await db()).dialogs.findByMember(req.cookies.token)
     })
 });
 
@@ -32,7 +32,7 @@ router.post('/add', validateWithFlashBack([
     const newDialog = await (await db()).dialogs.insert({
         id: shortid.generate(),
         title: req.body.title,
-        authorToken: req.cookies.token,
+        members: [req.cookies.token],
         messages: []
     });
     res.redirect(`/dialogs/${newDialog.id}`);
@@ -46,12 +46,12 @@ router.get('/:id', async (req, res, next) => {
     res.locals.appDb = appDb;
     res.locals.dialog = dialog;
     next();
-}, async (req, res) => {
+}, requireAccess(canPostMessage), async (req, res) => {
     const appDb = res.locals.appDb;
     const dialog = res.locals.dialog;
     res.render('dialogs/item', {
         token: req.cookies.token,
-        dialogs: await appDb.dialogs.findByAuthor(req.cookies.token),
+        dialogs: await appDb.dialogs.findByMember(req.cookies.token),
         currentDialog: dialog,
         messages: await Promise.all((await dialog.populate('messages') || []).map(async (message) => ({
             item: message,
@@ -69,7 +69,6 @@ router.post('/:id', async (req, res, next) => {
     res.locals.appDb = appDb;
     res.locals.dialog = dialog;
     next();
-
 }, requireAccess(canPostMessage), validateWithFlashBack([
     body('text', 'Текст сообщения не указан').exists().notEmpty()
 ]), async (req, res) => {
