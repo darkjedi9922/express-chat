@@ -17,7 +17,7 @@ router.post('/login', validateWithFlashBack([
 ]), async (req, res) => {
     const userToken = hash(`${req.body.login}${req.body.password}`);
     const appDb = await db();
-    if (!appDb.users.findByToken(userToken)) appDb.users.insert({
+    if (! await appDb.users.findByToken(userToken)) await appDb.users.insert({
         token: userToken,
         login: req.body.login
     });
