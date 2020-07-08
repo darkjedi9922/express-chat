@@ -1,6 +1,6 @@
 const schema = {
     title: "Dialog schema",
-    version: 3,
+    version: 5,
     description: "Describes a dialog schema",
     type: "object",
     properties: {
@@ -24,9 +24,13 @@ const schema = {
             items: {
                 type: 'string'
             }
+        },
+        createdAt: {
+            type: 'integer'
         }
     },
-    required: ["title", "members", "messages"]
+    required: ["title", "members", "messages", "createdAt"],
+    indexes: ['createdAt']
 }
 
 module.exports = {
@@ -34,7 +38,7 @@ module.exports = {
     schema: schema,
     statics: {
         findByMember(authorToken) {
-            return this.find().where('members').in([authorToken]).exec();
+            return this.find().where('members').in([authorToken]).sort({ createdAt: 1 }).exec();
         }
     },
     migrationStrategies: {
@@ -47,6 +51,11 @@ module.exports = {
             oldData.members = [oldData.authorToken];
             delete oldData.authorToken;
             return oldData;
-        }
+        },
+        4: oldData => {
+            oldData.createdAt = Date.now();
+            return oldData;
+        },
+        5: oldData => oldData
     }
 }

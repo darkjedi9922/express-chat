@@ -35,7 +35,8 @@ router.post('/add',
             id: shortid.generate(),
             title: req.body.title,
             members: [req.cookies.token],
-            messages: []
+            messages: [],
+            createdAt: Date.now()
         });
         res.redirect(`/dialogs/${newDialog.id}`);
     }
