@@ -54,7 +54,7 @@ router.get('/:id',
             currentDialog: dialog,
             messages: await Promise.all(messages.map(async (message) => ({
                 item: message,
-                author: await appDb.users.findOne(message.authorId).exec()
+                author: await appDb.users.findOne(message.authorToken).exec()
             }))),
             errors: req.errors
         })
