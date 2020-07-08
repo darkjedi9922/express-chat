@@ -87,6 +87,42 @@ router.post('/:id',
     }
 )
 
+router.get('/:id/invite',
+    _requireDialogExistsById(),
+    requireAccess(canPostMessage),
+    async (req, res) => {
+        res.render('dialogs/invite', {
+            currentDialog: res.locals.dialog,
+            dialogs: await res.locals.appDb.dialogs.findByMember(req.cookies.token),
+            errors: req.errors,
+            token: req.cookies.token
+        });
+    }
+)
+
+router.post('/:id/invite',
+    _requireDialogExistsById(),
+    requireAccess(canPostMessage),
+    validateWithFlashBack([
+        body('userToken', 'ID пользователя не указан').exists().notEmpty(),
+        body('userToken', 'Такого пользователя не существует').custom(async value => {
+            if (! await (await db()).users.findOne(value).exec())
+                return Promise.reject();
+        }),
+        body('userToken', 'Пользователь уже приглашен').custom(async (value, { req }) => {
+            const dialog = await (await db()).dialogs.findOne(req.params.id).exec();
+            if (dialog.members.includes(value)) return Promise.reject();
+        })
+    ]),
+    async (req, res) => {
+        await res.locals.dialog.atomicUpdate((oldData) => {
+            oldData.members.push(req.body.userToken);
+            return oldData;
+        });
+        res.redirect('../' + req.params.id);
+    }
+)
+
 function _requireDialogExistsById() {
     return async (req, res, next) => {
         const appDb = await db();

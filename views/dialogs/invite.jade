@@ -1,0 +1,13 @@
+extends layout
+
+block head-buttons
+  button.btn.btn-success(form="invite-form") Готово
+  a.btn.btn-danger(href="/dialogs/#{currentDialog.id}") Отмена
+
+block primary
+  form#invite-form(action="/dialogs/#{currentDialog.id}/invite" method="post")
+    include ../components/errors.jade
+    .form-group
+      label(for='tokenInput') ID пользователя
+      input#tokenInput.form-control(type='text', name='userToken')
+      small.form-text.text-muted Чтобы пригласить пользователя, попросите у него его ID

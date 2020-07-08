@@ -1,7 +1,7 @@
 extends layout
 
 block head-buttons
-  a.btn.btn-success(href='#') Пригласить
+  a.btn.btn-success(href='/dialogs/#{currentDialog.id}/invite') Пригласить
   a.btn.btn-primary(href='/dialogs/add') Новый диалог
   a.btn.btn-light(href='/dialogs') К диалогам
 
