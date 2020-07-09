@@ -1,8 +1,9 @@
+const io = require('socket.io');
 const cookie = require('cookie');
 
 exports.connections = {};
-exports.init = (app) => {
-    app.locals.io.on('connection', (socket) => {
+exports.init = (server) => {
+    io(server).on('connection', (socket) => {
         const token = cookie.parse(socket.request.headers.cookie || '').token;
         if (!token) return;
         if (!this.connections[token]) this.connections[token] = [];

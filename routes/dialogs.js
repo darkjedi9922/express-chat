@@ -8,6 +8,7 @@ const shortid = require('shortid');
 const db = require('../db/connect');
 const createHttpError = require('http-errors');
 const { canPostMessage } = require('../rights/dialogs');
+const { connections } = require('../tools/socket');
 
 router.use(requireAccess(isLogged, '/'));
 
