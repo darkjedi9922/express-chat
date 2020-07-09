@@ -85,6 +85,16 @@ router.post('/:id',
         ]);
 
         res.redirect('back');
+
+        const messageAuthor = await res.locals.appDb.users.findOne(req.cookies.token).exec();
+        res.locals.dialog.members.map(token => {
+            (connections[token] || []).map(socket => {
+                socket.emit('new message', {
+                    authorLogin: messageAuthor.login,
+                    text: req.body.text
+                })
+            })
+        });
     }
 )
 
